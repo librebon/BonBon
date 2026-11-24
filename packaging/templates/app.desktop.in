@@ -1,11 +1,12 @@
 [Desktop Entry]
+Version=1.0
 Type=Application
 Name=@LW_PRODUCT_NAME@
 GenericName=Image Editor
 Comment=Fireworks-style image editor for web graphics
 Exec=@LW_EXE_NAME@ %F
 Icon=@LW_ICON_NAME@
-Categories=Graphics;2DGraphics;RasterGraphics;
+Categories=Graphics;2DGraphics;RasterGraphics;VectorGraphics;
 Terminal=false
 MimeType=@LW_DESKTOP_MIME@
 Keywords=image;editor;fireworks;web;gif;webp;avif;heic;psd;svg;raw;exr;icon;favicon;

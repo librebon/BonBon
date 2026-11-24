@@ -559,8 +559,13 @@ if(LW_IS_BONBON)
   foreach(_sz 16 22 24 32 48 64 128 256 512)
     install(FILES ${CMAKE_SOURCE_DIR}/packaging/icons/bonbon/${_sz}x${_sz}/bonbon.png
             DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/${_sz}x${_sz}/apps
-            RENAME bonbon.png)
+            RENAME ${LW_ICON_NAME}.png)
   endforeach()
+  install(FILES ${CMAKE_SOURCE_DIR}/packaging/icons/bonbon/scalable/io.github.librebon.BonBon.svg
+          DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
+          RENAME ${LW_ICON_NAME}.svg)
+  install(FILES ${CMAKE_SOURCE_DIR}/packaging/io.github.librebon.BonBon.metainfo.xml
+          DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
   foreach(_sz 16 22 24 32 48 64 128 256)
     install(FILES ${CMAKE_SOURCE_DIR}/packaging/icons/bonbon/mimetypes/${_sz}x${_sz}/application-x-bonbon.png
             DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/${_sz}x${_sz}/mimetypes

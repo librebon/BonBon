@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.librebon.BonBon</id>
+  <name>Bonbon</name>
+  <summary>Fireworks-style web image editor</summary>
+  <developer id="io.github.librebon">
+    <name>librebon</name>
+  </developer>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <url type="homepage">https://github.com/librebon/BonBon</url>
+  <url type="bugtracker">https://github.com/librebon/BonBon/issues</url>
+  <url type="vcs-browser">https://github.com/librebon/BonBon</url>
+  <launchable type="desktop-id">io.github.librebon.BonBon.desktop</launchable>
+  <description>
+    <p>
+      Bonbon is a native image editor in the spirit of Macromedia Fireworks MX 2004.
+      It combines bitmap and vector tools in one document, with an Optimize panel
+      for exporting modern web formats.
+    </p>
+    <p>
+      Documents are saved as .bon files. Bonbon can also open Libreworks .lwd
+      documents, plus common still-image, raw, and high-dynamic-range formats.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Bitmap painting, selection and retouch tools, plus Auto Shapes and path editing</li>
+      <li>Export and Optimize for PNG, JPEG, GIF, WebP, AVIF, JPEG XL, HEIC and more</li>
+      <li>Edit Stroke, styles, frames, layers and a Fireworks-style property inspector</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/librebon/BonBon/v0.3.36/data/screenshots/01-main.png</image>
+      <caption>Editing a bitmap document</caption>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="0.3.36" date="2026-11-24">
+      <url type="details">https://github.com/librebon/BonBon/releases/tag/v0.3.36</url>
+      <description>
+        <p>Fixes Align panel distribute-horizontal button labels being elided to an ellipsis.</p>
+      </description>
+    </release>
+  </releases>
+  <branding>
+    <color type="primary" scheme_preference="light">#FF6699</color>
+    <color type="primary" scheme_preference="dark">#C2185B</color>
+  </branding>
+  <content_rating type="oars-1.1"/>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </recommends>
+  <supports>
+    <control>tablet</control>
+  </supports>
+  <provides>
+    <binary>bonbon</binary>
+    <mediatype>application/x-bonbon</mediatype>
+    <mediatype>application/x-libreworks</mediatype>
+    <mediatype>image/png</mediatype>
+    <mediatype>image/jpeg</mediatype>
+    <mediatype>image/webp</mediatype>
+    <mediatype>image/gif</mediatype>
+    <mediatype>image/avif</mediatype>
+    <mediatype>image/jxl</mediatype>
+    <mediatype>image/heic</mediatype>
+    <mediatype>image/heif</mediatype>
+    <mediatype>image/tiff</mediatype>
+    <mediatype>image/bmp</mediatype>
+    <mediatype>image/svg+xml</mediatype>
+    <mediatype>image/x-exr</mediatype>
+    <mediatype>image/vnd.adobe.photoshop</mediatype>
+    <mediatype>image/openraster</mediatype>
+    <mediatype>image/x-xcf</mediatype>
+    <mediatype>image/x-dcraw</mediatype>
+  </provides>
+</component>

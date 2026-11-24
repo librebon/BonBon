@@ -17,6 +17,8 @@ done
 [ "$other_still" -eq 0 ] || exit 0
 lw_ok="application/x-libreworks=libreworks.desktop;bonbon.desktop;"
 bon_ok="application/x-bonbon=bonbon.desktop;libreworks.desktop;"
+lw_ok_new="application/x-libreworks=libreworks.desktop;io.github.librebon.BonBon.desktop;bonbon.desktop;"
+bon_ok_new="application/x-bonbon=io.github.librebon.BonBon.desktop;bonbon.desktop;libreworks.desktop;"
 tmp=$(mktemp)
 in_defaults=0
 while IFS= read -r line || [ -n "$line" ]; do
@@ -29,7 +31,7 @@ while IFS= read -r line || [ -n "$line" ]; do
             in_defaults=0
             printf '%s\n' "$line" >> "$tmp"
             ;;
-        "$lw_ok"|"$bon_ok")
+        "$lw_ok"|"$bon_ok"|"$lw_ok_new"|"$bon_ok_new")
             # Only drop our Default Applications lines; leave other sections alone.
             if [ "$in_defaults" -ne 1 ]; then
                 printf '%s\n' "$line" >> "$tmp"

@@ -17,8 +17,12 @@ if(_lw_brand_lc STREQUAL "bonbon")
   set(LW_PRODUCT_NAME_LOWER "bonbon")
   set(LW_ORG_NAME "Bonbon")
   set(LW_EXE_NAME "bonbon")
-  set(LW_DESKTOP_ID "bonbon")
-  set(LW_ICON_NAME "bonbon")
+  # Reverse-DNS id for AppStream / Flatpak / desktop+icon install names.
+  # Domain is lowercase; the last component is the GitHub repo name as-is
+  # (Flathub code-hosting rule), so this is io.github.librebon.BonBon.
+  set(LW_APP_ID "io.github.librebon.BonBon")
+  set(LW_DESKTOP_ID "io.github.librebon.BonBon")
+  set(LW_ICON_NAME "io.github.librebon.BonBon")
   set(LW_PACKAGE_NAME "bonbon")
   set(LW_DOC_DIR "bonbon")
   set(LW_LIB_DIR_NAME "bonbon")
