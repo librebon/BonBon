@@ -1,5 +1,4 @@
-# Libreworks
-_(mirrored from: https://codeberg.org/wasi/Libreworks)_
+# Libreworks (BonBon)
 
 Libreworks is a native Linux image editor for web graphics. It follows the look
 and workflow of Macromedia Fireworks MX 2004 and adds modern formats: WebP, AVIF,
