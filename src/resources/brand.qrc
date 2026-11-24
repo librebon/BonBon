@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="/brand">
+    <file alias="bonbon-16.png">brand/bonbon-16.png</file>
+    <file alias="bonbon-22.png">brand/bonbon-22.png</file>
+    <file alias="bonbon-24.png">brand/bonbon-24.png</file>
+    <file alias="bonbon-32.png">brand/bonbon-32.png</file>
+    <file alias="bonbon-48.png">brand/bonbon-48.png</file>
+    <file alias="bonbon-64.png">brand/bonbon-64.png</file>
+    <file alias="bonbon-128.png">brand/bonbon-128.png</file>
+    <file alias="bonbon-256.png">brand/bonbon-256.png</file>
+    <file alias="bonbon-512.png">brand/bonbon-512.png</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Libreworks
+GenericName=Image Editor
+Comment=Fireworks MX 2004-style bitmap and vector editor for web graphics
+Exec=libreworks %F
+Icon=libreworks
+Terminal=false
+Categories=Graphics;2DGraphics;RasterGraphics;VectorGraphics;Qt;
+MimeType=application/x-libreworks;image/png;image/apng;image/jpeg;image/webp;image/gif;image/avif;image/jxl;image/heic;image/heif;image/heic-sequence;image/heif-sequence;image/bmp;image/x-bmp;image/x-ms-bmp;image/tiff;image/x-tga;image/x-targa;image/vnd.adobe.photoshop;image/x-psd;application/x-photoshop;image/openraster;image/x-xcf;image/svg+xml;image/svg+xml-compressed;image/x-dcraw;image/x-adobe-dng;image/x-canon-cr2;image/x-canon-cr3;image/x-canon-crw;image/x-nikon-nef;image/x-nikon-nrw;image/x-sony-arw;image/x-sony-srf;image/x-sony-sr2;image/x-olympus-orf;image/x-panasonic-rw2;image/x-fuji-raf;image/x-pentax-pef;image/x-samsung-srw;image/x-sigma-x3f;image/x-kodak-dcr;image/x-kodak-kdc;image/x-minolta-mrw;image/x-epson-erf;image/x-hasselblad-3fr;image/x-exr;image/vnd.radiance;image/x-hdr;image/x-portable-floatmap;image/vnd.ms-dds;image/x-dds;image/ktx2;image/qoi;image/x-qoi;image/vnd.microsoft.icon;image/x-icon;image/x-win-bitmap;image/x-cursor;image/x-icns;image/x-portable-pixmap;image/x-portable-anymap;image/x-portable-graymap;image/x-portable-bitmap;image/x-portable-arbitrarymap;image/vnd.zbrush.pcx;image/x-pcx;image/x-xpixmap;image/x-xbitmap;
+Keywords=image;editor;fireworks;web;gif;webp;avif;heic;psd;svg;raw;exr;icon;favicon;
+StartupWMClass=libreworks

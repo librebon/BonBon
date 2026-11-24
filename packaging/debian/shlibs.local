@@ -1,0 +1,12 @@
+# Override dpkg-shlibdeps floors that a trixie-security rebuild on the build
+# box would otherwise inflate past the Debian trixie base versions.
+# Audited against apt policy on the 0.3.31 box: the only shlibs-only
+# dependency whose floor rose above the trixie/main package was OpenEXR
+# (security 3.2.12 vs trixie 3.1.13). Other Depends come from symbols
+# files (or shlibs that already match trixie) and already have floors
+# satisfied by the trixie base packages.
+libIex-3_1 30 libopenexr-3-1-30 (>= 3.1.13)
+libIlmThread-3_1 30 libopenexr-3-1-30 (>= 3.1.13)
+libOpenEXR-3_1 30 libopenexr-3-1-30 (>= 3.1.13)
+libOpenEXRCore-3_1 30 libopenexr-3-1-30 (>= 3.1.13)
+libOpenEXRUtil-3_1 30 libopenexr-3-1-30 (>= 3.1.13)

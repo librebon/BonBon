@@ -1,0 +1,19 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: @LW_PRODUCT_NAME@
+Source: https://localhost/@LW_PRODUCT_NAME_LOWER@
+
+Files: *
+Copyright: @LW_PRODUCT_NAME@ contributors
+License: GPL-3.0-or-later
+
+Files: src/resources/icons/gnome-wine/*
+Copyright: GNOME-Colors / GNOME-Wine contributors
+License: GPL-2.0-or-later
+Comment: Bundled subset of the GNOME-Wine icon theme (wine-red variant of GNOME-Colors).
+ The upstream zip had no COPYING file; GNOME-Colors is GPLv2 or later.
+ See third_party/gnome-wine/README.md.
+
+Files: packaging/icons/bonbon/*
+Copyright: Bonbon icon artwork supplied for the Bonbon brand
+License: GPL-3.0-or-later
+Comment: Application icon used when building with -DLW_BRAND=Bonbon.

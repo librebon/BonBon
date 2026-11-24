@@ -1,0 +1,17 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Libreworks
+Source: https://localhost/libreworks
+
+Files: *
+Copyright: Libreworks contributors
+License: GPL-3.0-or-later
+
+Files: src/resources/icons/gnome-wine/*
+Copyright: GNOME-Colors / GNOME-Wine contributors
+License: GPL-2.0-or-later
+Comment: Bundled subset of the GNOME-Wine icon theme (wine-red variant of GNOME-Colors).
+ The upstream zip included with Libreworks 0.3.8 had no COPYING file; GNOME-Colors is
+ GPLv2 or later. See third_party/gnome-wine/README.md. A few action icons
+ (document-new, document-save, edit-undo, edit-redo, zoom-in, zoom-out) were drawn for
+ Libreworks in the same palette where the theme (which inherits gnome-colors-common)
+ did not ship those names.

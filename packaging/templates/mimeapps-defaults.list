@@ -1,0 +1,3 @@
+[Default Applications]
+application/x-libreworks=libreworks.desktop;bonbon.desktop;
+application/x-bonbon=bonbon.desktop;libreworks.desktop;

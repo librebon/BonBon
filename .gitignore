@@ -1,0 +1,9 @@
+build/
+build-*/
+dist/_CPack_Packages/
+*.user
+/AppDir/
+dist/
+
+# packaging/cpack-dpkg-shlibdeps.sh may leave debian/ if cwd is the source tree.
+/debian/

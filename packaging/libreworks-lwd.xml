@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Libreworks MIME types: the native document plus the image types shared-mime-info does not
+     define on every distribution (installed to /usr/share/mime/packages). -->
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-libreworks">
+    <comment>Libreworks document</comment>
+    <sub-class-of type="application/zip"/>
+    <glob pattern="*.lwd"/>
+    <icon name="libreworks"/>
+  </mime-type>
+  <mime-type type="image/vnd.radiance">
+    <comment>Radiance HDR image</comment>
+    <alias type="image/x-hdr"/>
+    <magic priority="50"><match type="string" value="#?RADIANCE" offset="0"/><match type="string" value="#?RGBE" offset="0"/></magic>
+    <glob pattern="*.hdr"/><glob pattern="*.rgbe"/>
+  </mime-type>
+  <mime-type type="image/x-portable-floatmap">
+    <comment>PFM portable float map</comment>
+    <magic priority="50"><match type="string" value="PF\n" offset="0"/><match type="string" value="Pf\n" offset="0"/></magic>
+    <glob pattern="*.pfm"/>
+  </mime-type>
+  <mime-type type="image/x-portable-arbitrarymap">
+    <comment>PAM Netpbm image</comment>
+    <magic priority="50"><match type="string" value="P7\n" offset="0"/></magic>
+    <glob pattern="*.pam"/>
+  </mime-type>
+  <mime-type type="image/x-samsung-srw">
+    <comment>Samsung raw image</comment>
+    <sub-class-of type="image/x-dcraw"/>
+    <glob pattern="*.srw"/>
+  </mime-type>
+  <mime-type type="image/x-epson-erf">
+    <comment>Epson raw image</comment>
+    <sub-class-of type="image/x-dcraw"/>
+    <glob pattern="*.erf"/>
+  </mime-type>
+  <mime-type type="image/x-hasselblad-3fr">
+    <comment>Hasselblad raw image</comment>
+    <sub-class-of type="image/x-dcraw"/>
+    <glob pattern="*.3fr"/>
+  </mime-type>
+</mime-info>

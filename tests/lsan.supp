@@ -1,0 +1,3 @@
+# fontconfig caches font metadata for the process lifetime; ui_smoke (and other
+# offscreen Qt GUI tests) otherwise fail LeakSanitizer on a clean ASan matrix.
+leak:libfontconfig

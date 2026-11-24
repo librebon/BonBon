@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="pageFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBBCC7"/>
+      <stop offset="55%" stop-color="#F8A8B8"/>
+      <stop offset="100%" stop-color="#F294A6"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFAFC" stop-opacity="0.50"/>
+      <stop offset="100%" stop-color="#FFFAFC" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="foldFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFD6DE"/>
+      <stop offset="100%" stop-color="#ECAAB8"/>
+    </linearGradient>
+  </defs>
+  <!-- Body with dog-ear cut; fold=197 of content width 896, margin 64 -->
+  <path fill="url(#pageFill)" stroke="#C46476" stroke-width="16" stroke-linejoin="round"
+        d="M64,64 L731,64 L960,293 L960,960 L64,960 Z"/>
+  <!-- Gloss -->
+  <path fill="url(#gloss)" d="M64,64 L731,64 L960,293 L960,420 Q512,460 64,420 Z"/>
+  <!-- Fold underside (fills cut corner) -->
+  <path fill="url(#foldFill)" stroke="#D2788A" stroke-width="4"
+        d="M731,64 L960,293 L731,293 Z"/>
+  <line x1="731" y1="64" x2="960" y2="293" stroke="#D2788A" stroke-width="6"/>
+  <!-- Bn from app icon -->
+  <image xlink:href="bn-glyph.png" x="230" y="350" width="540" height="366"
+         preserveAspectRatio="xMidYMid meet"/>
+</svg>
