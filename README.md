@@ -7,11 +7,7 @@ camera RAW, HDR (OpenEXR / Radiance), GPU textures (DDS / KTX2), icons (ICO / CU
 
 It is written in C++17 with Qt 6 Widgets. It is not affiliated with Adobe or Macromedia.
 
-![Libreworks main window](docs/screenshot.png)
-
-The 4-Up optimisation view (Original, current settings, and two alternatives):
-
-![4-Up view](docs/screenshot-4up.png)
+![BonBon main window](data/screenshots/01-main.png)
 
 ## Features
 
