@@ -730,7 +730,16 @@ LayersPanel::LayersPanel(QWidget *parent) : DocPanel(parent) {
     m_tree->setDragDropMode(QAbstractItemView::InternalMove);
     m_tree->setDefaultDropAction(Qt::MoveAction);
     m_insert = new DragInsertIndicator(m_tree->viewport());
-    connect(&appState(), &AppState::prefsChanged, this, [this] { if (m_doc) rebuild(); });
+    connect(&appState(), &AppState::prefsChanged, this, [this] {
+        if (!m_doc) return;
+        if (appState().lastPrefsChangedWebFeatures()) {
+            rebuild();
+            return;
+        }
+        // Theme switches must refresh current-row ink (setBackground caches the
+        // first theme); a full rebuild is only needed when web-layer rows appear.
+        refreshInPlace();
+    });
     {
         auto *dg = new InlineNameDelegate(2, m_tree);
         dg->commit = [this](const QModelIndex &i, const QString &text) {

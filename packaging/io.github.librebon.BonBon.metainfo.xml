@@ -31,11 +31,17 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/librebon/BonBon/v0.3.36/data/screenshots/01-main.png</image>
+      <image>https://raw.githubusercontent.com/librebon/BonBon/v0.3.37/data/screenshots/01-main.png</image>
       <caption>Editing a bitmap document</caption>
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.3.37" date="2026-11-24">
+      <url type="details">https://github.com/librebon/BonBon/releases/tag/v0.3.37</url>
+      <description>
+        <p>Fixes invisible numbers in pop-up slider fields under newer Qt, speeds up theme switching and startup, and adds Flathub metadata.</p>
+      </description>
+    </release>
     <release version="0.3.36" date="2026-11-24">
       <url type="details">https://github.com/librebon/BonBon/releases/tag/v0.3.36</url>
       <description>

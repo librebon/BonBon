@@ -64,6 +64,7 @@ FindPanel::FindPanel(QWidget *parent) : QWidget(parent) {
     m_sizeFrom = sizeBox(QStringLiteral("findSize"), QStringLiteral("Any size"));
     m_fontTo = fontBox(QStringLiteral("replaceFont"), QStringLiteral("Unchanged"));
     connect(&appState(), &AppState::prefsChanged, this, [this] {
+        if (!appState().lastPrefsChangedFontSources()) return;
         fillFontSourceCombo(m_fontFrom, true);
         fillFontSourceCombo(m_fontTo, true);
     });

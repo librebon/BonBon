@@ -159,37 +159,37 @@ void sizePopup(QComboBox *combo)
     }
 }
 
+int g_suspended = 0;
+
 class ComboFitFilter final : public QObject {
 public:
     using QObject::QObject;
     bool eventFilter(QObject *o, QEvent *e) override {
         const auto t = e->type();
+        if (g_suspended && t != QEvent::Show)
+            return false;
         if (t == QEvent::Polish || t == QEvent::Show || t == QEvent::StyleChange
             || t == QEvent::FontChange) {
             if (auto *c = qobject_cast<QComboBox *>(o)) {
-                if (!isFileTypeCombo(c))
+                if (!isFileTypeCombo(c)) {
+                    // Polish during MainWindow construction re-laid out every
+                    // dock for each combo (qSmartMinSize on the PI scroll area).
+                    // Fit when the combo is shown, or when its font really changes.
+                    if (t != QEvent::Show && t != QEvent::FontChange && !c->isVisible())
+                        return false;
                     apply(c);
+                }
             }
         }
         if (t == QEvent::Show) {
+            // Only the combo's own view: walking every Show with findChild
+            // was paying a tax on tooltips, popups and dock flash-ins.
             if (auto *view = qobject_cast<QAbstractItemView *>(o)) {
                 QObject *p = view->parent();
                 while (p && !qobject_cast<QComboBox *>(p)) p = p->parent();
                 if (auto *c = qobject_cast<QComboBox *>(p)) {
                     if (!isFileTypeCombo(c) && c->view() == view)
                         sizePopup(c);
-                }
-            } else if (auto *w = qobject_cast<QWidget *>(o)) {
-                QWidget *win = w->window();
-                if (win && win != w && win != w->parentWidget()) {
-                    if (QAbstractItemView *view = win->findChild<QAbstractItemView *>()) {
-                        QObject *p = view;
-                        while (p && !qobject_cast<QComboBox *>(p)) p = p->parent();
-                        if (auto *c = qobject_cast<QComboBox *>(p)) {
-                            if (!isFileTypeCombo(c) && c->view() == view)
-                                sizePopup(c);
-                        }
-                    }
                 }
             }
         }
@@ -222,6 +222,13 @@ bool isFileTypeCombo(const QComboBox *combo)
     return false;
 }
 
+static bool sameFitFont(const QFont &a, const QFont &b)
+{
+    return a.family() == b.family() && a.pointSizeF() == b.pointSizeF()
+        && a.pixelSize() == b.pixelSize() && a.weight() == b.weight()
+        && a.style() == b.style();
+}
+
 void apply(QComboBox *combo)
 {
     if (!combo || isFileTypeCombo(combo)) return;
@@ -238,6 +245,16 @@ void apply(QComboBox *combo)
     if (!combo->property("_lwComboFitOrigMax").isValid())
         combo->setProperty("_lwComboFitOrigMax", combo->maximumWidth());
 
+    // Theme switches restyle every combo with the same 9pt font; re-fitting
+    // and setMinimumContentsLength would relayout the window for no change.
+    if (combo->property(kFitted).toBool()
+        && sameFitFont(combo->property("_lwComboFitFont").value<QFont>(), combo->font())
+        && combo->property("_lwComboFitCount").toInt() == combo->count()
+        && combo->property("_lwComboFitText").toString() == combo->currentText()) {
+        applyCurrentTooltip(combo);
+        return;
+    }
+
     int cap = closedCapFor(combo);
     const int origMax = combo->property("_lwComboFitOrigMax").toInt();
     if (origMax > 0 && origMax < QWIDGETSIZE_MAX)
@@ -246,8 +263,10 @@ void apply(QComboBox *combo)
     const int wantText = isHugeModel(combo)
                               ? textWidth(combo, combo->currentText())
                               : qMax(textWidth(combo, combo->currentText()), widestItem(combo));
-    combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-    combo->setMaximumWidth(cap);
+    if (combo->sizeAdjustPolicy() != QComboBox::AdjustToMinimumContentsLengthWithIcon)
+        combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    if (combo->maximumWidth() != cap)
+        combo->setMaximumWidth(cap);
     if (combo->minimumWidth() > cap)
         combo->setMinimumWidth(0);
 
@@ -274,9 +293,14 @@ void apply(QComboBox *combo)
         if (combo->minimumContentsLength() < chars)
             combo->setMinimumContentsLength(chars);
     } else {
-        combo->setMinimumContentsLength(qMax(4, origMcl));
+        const int want = qMax(4, origMcl);
+        if (combo->minimumContentsLength() != want)
+            combo->setMinimumContentsLength(want);
     }
     combo->setProperty(kFitted, true);
+    combo->setProperty("_lwComboFitFont", combo->font());
+    combo->setProperty("_lwComboFitCount", combo->count());
+    combo->setProperty("_lwComboFitText", combo->currentText());
     applyItemTooltips(combo, true);
 }
 
@@ -295,6 +319,12 @@ void install(QCoreApplication *app)
     if (g_filter) return;
     g_filter = new ComboFitFilter(app);
     app->installEventFilter(g_filter);
+}
+
+void setSuspended(bool on)
+{
+    if (on) ++g_suspended;
+    else if (g_suspended > 0) --g_suspended;
 }
 
 } // namespace combofit

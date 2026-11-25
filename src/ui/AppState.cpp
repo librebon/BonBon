@@ -24,6 +24,10 @@ AppState &AppState::get() {
 }
 
 void AppState::setPrefs(const Prefs &p) {
+    m_lastPrefsChangedFontSources = p.useSystemFonts != prefs.useSystemFonts
+        || p.useCustomFonts != prefs.useCustomFonts
+        || p.customFontDir != prefs.customFontDir;
+    m_lastPrefsChangedWebFeatures = p.enableWebFeatures != prefs.enableWebFeatures;
     prefs = p;
     prefs.undoSteps = qBound(1, prefs.undoSteps, 999);
     prefs.undoMemoryMB = qBound(64, prefs.undoMemoryMB, 65536);
@@ -55,7 +59,10 @@ void AppState::setPrefs(const Prefs &p) {
         tm.exposure = prefs.hdrExposure;
         ImageIO::setToneMap(tm);
     }
-    applyFontSources();
+    // Reloading application fonts and walking QFontDatabase on every theme
+    // switch made setPrefs several times slower than 0.3.27.
+    if (m_lastPrefsChangedFontSources)
+        applyFontSources();
     if (!prefs.enableWebFeatures && (toolIsHotspot(m_tool) || toolIsSlice(m_tool))) {
         m_tool = Tool::Pointer;
         emit toolChanged(m_tool);
@@ -63,7 +70,8 @@ void AppState::setPrefs(const Prefs &p) {
     // Refresh font lists first so a live text object's family is kept, then
     // (if needed) retarget the application font to a fallback face.
     emit prefsChanged();
-    applyUiFontForSources();
+    if (m_lastPrefsChangedFontSources)
+        applyUiFontForSources();
 }
 
 void AppState::loadPrefs() {

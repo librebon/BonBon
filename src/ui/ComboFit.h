@@ -17,5 +17,7 @@ void install(QCoreApplication *app = nullptr);
 void apply(QComboBox *combo);
 void applyTree(QWidget *root);
 bool isFileTypeCombo(const QComboBox *combo);
+// theme::apply: skip closed-combo refit on Polish/StyleChange (font is unchanged).
+void setSuspended(bool on);
 
 } // namespace combofit

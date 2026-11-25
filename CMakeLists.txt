@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(Libreworks VERSION 0.3.36 LANGUAGES C CXX)
+project(Libreworks VERSION 0.3.37 LANGUAGES C CXX)
 
 include(cmake/LwBrand.cmake)
 configure_file(${CMAKE_SOURCE_DIR}/src/brand/Brand.h.in

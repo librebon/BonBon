@@ -148,6 +148,10 @@ PropertyInspector::PropertyInspector(QWidget *parent) : QWidget(parent) {
     updateMinimumHeight();
     connect(&appState(), &AppState::toolChanged, this, &PropertyInspector::refresh);
     connect(&appState(), &AppState::prefsChanged, this, [this] {
+        // Theme switches already re-polish via theme::apply; a full refresh
+        // here was re-binding every inspector field on each change.
+        if (!appState().lastPrefsChangedWebFeatures() && !appState().lastPrefsChangedFontSources())
+            return;
         m_toolOptsFor = -1; // Slice Link/Alt/Target and similar depend on Enable web features
         refresh();
         if (!m_doc) refreshTool();

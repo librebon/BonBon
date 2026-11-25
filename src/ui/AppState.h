@@ -275,6 +275,9 @@ public:
 
     Prefs prefs;
     void setPrefs(const Prefs &p); // applies, mirrors core prefs, emits prefsChanged
+    // Valid during prefsChanged: true when setPrefs actually changed these groups.
+    bool lastPrefsChangedFontSources() const { return m_lastPrefsChangedFontSources; }
+    bool lastPrefsChangedWebFeatures() const { return m_lastPrefsChangedWebFeatures; }
     void applyFontSources(); // reload system/custom fonts from prefs
     void applyUiFontForSources(); // after prefsChanged: fallback or restore the UI font
     // Fonts the UI should list: system families, custom-folder families, or both.
@@ -317,6 +320,8 @@ private:
     AppState();
     Tool m_tool = Tool::Pointer;
     QHash<int, QVariantMap> m_slots;   // per-tool options of the tools not active now
+    bool m_lastPrefsChangedFontSources = false;
+    bool m_lastPrefsChangedWebFeatures = false;
 };
 
 inline AppState &appState() { return AppState::get(); }

@@ -103,8 +103,8 @@ private slots:
         const QByteArray body = out.readAll();
         out.close();
         QVERIFY2(body.contains("text/plain=gedit.desktop;"), body.constData());
-        QVERIFY2(body.contains("application/x-libreworks=libreworks.desktop;bonbon.desktop;"), body.constData());
-        QVERIFY2(body.contains("application/x-bonbon=bonbon.desktop;libreworks.desktop;"), body.constData());
+        QVERIFY2(body.contains("application/x-libreworks=libreworks.desktop;io.github.librebon.BonBon.desktop;bonbon.desktop;"), body.constData());
+        QVERIFY2(body.contains("application/x-bonbon=io.github.librebon.BonBon.desktop;bonbon.desktop;libreworks.desktop;"), body.constData());
         QVERIFY2(body.contains("application/x-libreworks=foo.desktop;"), body.constData());
         QVERIFY2(body.contains("application/pdf=evince.desktop;"), body.constData());
         QVERIFY2(body.contains("[Added Associations]"), body.constData());
@@ -132,8 +132,8 @@ private slots:
         QVERIFY(out.open(QIODevice::ReadOnly | QIODevice::Text));
         const QByteArray body3 = out.readAll();
         out.close();
-        QVERIFY2(!body3.contains("application/x-libreworks=libreworks.desktop;bonbon.desktop;"), body3.constData());
-        QVERIFY2(!body3.contains("application/x-bonbon=bonbon.desktop;libreworks.desktop;"), body3.constData());
+        QVERIFY2(!body3.contains("application/x-libreworks=libreworks.desktop;io.github.librebon.BonBon.desktop;bonbon.desktop;"), body3.constData());
+        QVERIFY2(!body3.contains("application/x-bonbon=io.github.librebon.BonBon.desktop;bonbon.desktop;libreworks.desktop;"), body3.constData());
         QVERIFY2(body3.contains("application/x-libreworks=foo.desktop;"), body3.constData());
         QVERIFY2(body3.contains("application/pdf=evince.desktop;"), body3.constData());
         QVERIFY2(body3.contains("text/plain=gedit.desktop;"), body3.constData());
@@ -142,8 +142,8 @@ private slots:
         QFile tmpl(QStringLiteral(LW_SOURCE_DIR) + QStringLiteral("/packaging/templates/mimeapps-defaults.list"));
         QVERIFY(tmpl.open(QIODevice::ReadOnly | QIODevice::Text));
         const QByteArray t = tmpl.readAll();
-        QVERIFY(t.contains("application/x-libreworks=libreworks.desktop;bonbon.desktop;"));
-        QVERIFY(t.contains("application/x-bonbon=bonbon.desktop;libreworks.desktop;"));
+        QVERIFY(t.contains("application/x-libreworks=libreworks.desktop;io.github.librebon.BonBon.desktop;bonbon.desktop;"));
+        QVERIFY(t.contains("application/x-bonbon=io.github.librebon.BonBon.desktop;bonbon.desktop;libreworks.desktop;"));
     }
 
     void bonbonMimeUsesLibreworksIconForLwd() {

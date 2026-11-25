@@ -334,11 +334,22 @@ void SliderTarget::layoutArrow(QAbstractSpinBox *box) {
     const QRect r(box->width() - fw - SliderArrow::kWidth, fw, SliderArrow::kWidth, box->height() - 2 * fw);
     m_arrow->setGeometry(r);
     m_arrow->raise();
-    // keep the text clear of the triangle
+    // Keep the editor in the space to the left of the triangle. Some styles
+    // (KDE runtime / Qt 6.11 QStyleSheetStyle with NoButtons) lay the
+    // inner QLineEdit out at 1px wide; only shrinking it would leave the
+    // number clipped and invisible. If the style already gave a usable
+    // width, keep its inset and only trim a right overlap (native path).
     if (QLineEdit *le = box->findChild<QLineEdit *>()) {
         QRect g = le->geometry();
-        if (g.right() >= r.left()) {
-            g.setRight(r.left() - 1);
+        const int right = r.left() - 1;
+        if (g.width() <= 2) {
+            const int left = fw + 1;
+            const int top = (g.height() > 2) ? g.top() : fw;
+            const int h = (g.height() > 2) ? g.height() : (box->height() - 2 * fw);
+            if (right > left)
+                le->setGeometry(left, top, right - left + 1, h);
+        } else if (g.right() >= r.left()) {
+            g.setRight(right);
             le->setGeometry(g);
         }
     }

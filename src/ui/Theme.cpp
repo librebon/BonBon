@@ -101,7 +101,16 @@ QToolButton { border: 1px solid transparent; padding: 2px; }
 QToolButton:hover { border: 1px solid palette(dark); background: palette(base); }
 QToolButton:checked { border: 1px solid palette(shadow); background: palette(midlight); }
 QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox, QPlainTextEdit {
-  background: palette(base); border: 1px solid palette(dark); padding: 1px 3px; selection-background-color: palette(highlight);
+  background: palette(base); color: palette(text); border: 1px solid palette(dark); padding: 1px 3px;
+  selection-background-color: palette(highlight); selection-color: palette(highlighted-text);
+}
+/* The inner editor of a QSpinBox (popup-slider fields) does not always take the
+   QSpinBox { color } rule, especially under the KDE runtime's platform theme.
+   Style the descendant QLineEdit directly. ZoomField is a top-level QLineEdit
+   and is not matched here. */
+QAbstractSpinBox QLineEdit, QComboBox QLineEdit {
+  color: palette(text); background: palette(base); border: none;
+  selection-background-color: palette(highlight); selection-color: palette(highlighted-text);
 }
 QComboBox::drop-down {
   subcontrol-origin: padding; subcontrol-position: top right; width: 14px;
@@ -916,12 +925,122 @@ static void wrapTipLabel(QLabel *lab)
     lab->adjustSize();
 }
 
+static bool g_guardingPalette = false;
+static bool g_applyingTheme = false;
+
+static bool isInputWidget(const QWidget *w)
+{
+    return qobject_cast<const QAbstractSpinBox *>(w)
+        || qobject_cast<const QLineEdit *>(w)
+        || qobject_cast<const QComboBox *>(w)
+        || qobject_cast<const QPlainTextEdit *>(w);
+}
+
+// Re-assert the theme palette on an input widget. The xdgdesktopportal /
+// Plasma / GTK platform theme often writes a host palette onto QLineEdit
+// children (the editor inside a popup slider) after theme::apply; the app
+// palette alone does not override WA_SetPalette on those widgets.
+static void applyInputPalette(QWidget *w)
+{
+    if (!w || g_appPalette.resolveMask() == 0) return;
+    const QPalette &want = g_appPalette;
+    const QPalette have = w->palette();
+    if (have.color(QPalette::Text) == want.color(QPalette::Text)
+        && have.color(QPalette::Base) == want.color(QPalette::Base)
+        && have.color(QPalette::HighlightedText) == want.color(QPalette::HighlightedText)
+        && have.color(QPalette::Highlight) == want.color(QPalette::Highlight)
+        && have.color(QPalette::WindowText) == want.color(QPalette::WindowText))
+        return;
+    const bool was = g_guardingPalette;
+    g_guardingPalette = true;
+    w->setPalette(want);
+    g_guardingPalette = was;
+}
+
+static void applyInputPaletteTree(QWidget *w)
+{
+    if (!w) return;
+    applyInputPalette(w);
+    if (qobject_cast<QAbstractSpinBox *>(w))
+        applyInputPalette(w->findChild<QLineEdit *>());
+    if (auto *cb = qobject_cast<QComboBox *>(w))
+        applyInputPalette(cb->lineEdit());
+}
+
+// Pin every line-edit / spin-box / combo to the theme palette. When
+// `repolish` is set, also refresh QStyleSheetStyle's cached palette()
+// colours on those widgets only (not a full-app restyle).
+static void forceInputPalettes(QApplication *app, bool repolish)
+{
+    if (!app || g_appPalette.resolveMask() == 0) return;
+    const QWidgetList widgets = app->allWidgets();
+    QList<QWidget *> inputs;
+    inputs.reserve(64);
+    for (QWidget *w : widgets) {
+        if (!isInputWidget(w)) continue;
+        applyInputPaletteTree(w);
+        inputs.append(w);
+    }
+    combofit::setSuspended(true);
+    if (repolish) {
+        for (QWidget *w : inputs) {
+            if (!w) continue;
+            if (QStyle *st = w->style()) { st->unpolish(w); st->polish(w); }
+            // QStyleSheetStyle may copy a stale palette during polish.
+            applyInputPaletteTree(w);
+        }
+    }
+    combofit::setSuspended(false);
+}
+
+static bool paletteRolesDiffer(const QPalette &a, const QPalette &b)
+{
+    for (QPalette::ColorRole role : {QPalette::Text, QPalette::WindowText, QPalette::Base,
+                                     QPalette::Window, QPalette::Button, QPalette::ButtonText,
+                                     QPalette::Highlight, QPalette::HighlightedText,
+                                     QPalette::PlaceholderText}) {
+        if (a.color(role) != b.color(role) || a.color(QPalette::Disabled, role) != b.color(QPalette::Disabled, role))
+            return true;
+    }
+    return false;
+}
+
+// Re-assert the theme palette when a platform theme (portal / Plasma / GTK)
+// overwrites QApplication's palette. Returns true if a restore ran.
+static bool restoreAppPalette()
+{
+    auto *app = qobject_cast<QApplication *>(QCoreApplication::instance());
+    if (!app || g_guardingPalette || g_applyingTheme || g_appPalette.resolveMask() == 0)
+        return false;
+    if (!paletteRolesDiffer(app->palette(), g_appPalette))
+        return false;
+    g_guardingPalette = true;
+    app->setPalette(g_appPalette);
+    g_guardingPalette = false;
+    // setPalette alone does not refresh QStyleSheetStyle's cached palette()
+    // colours; re-polish just the input widgets so numbers stay on our Text.
+    forceInputPalettes(app, true);
+    return true;
+}
+
 class ThemeEventFilter final : public QObject {
 public:
     using QObject::QObject;
     bool eventFilter(QObject *o, QEvent *e) override {
+        const auto type = e->type();
+        if (type == QEvent::ApplicationPaletteChange || type == QEvent::ThemeChange) {
+            // The KDE runtime's xdgdesktopportal / Plasma platform theme applies
+            // the host colour-scheme over our palette after theme::apply (often
+            // asynchronously via the settings portal). That leaves number-field
+            // QLineEdits (popup sliders) painting with host Text on our Base.
+            restoreAppPalette();
+        }
+        if (type == QEvent::PaletteChange && !g_guardingPalette && !g_applyingTheme) {
+            if (auto *w = qobject_cast<QWidget *>(o); w && isInputWidget(w))
+                applyInputPaletteTree(w);
+        }
         if (!o->inherits("QTipLabel")) return false;
-        const auto t = e->type();
+        const auto t = type;
         if (t != QEvent::Show && t != QEvent::PolishRequest && t != QEvent::Polish
             && t != QEvent::StyleChange)
             return false;
@@ -1195,6 +1314,7 @@ void apply(QApplication &app, const QString &idIn, const QColor &accent) {
     g_roles = r;
     g_current = id;
     g_appPalette = p;
+    g_applyingTheme = true;
     app.setPalette(p);
     const QString key = cacheKey(id, accent);
     // Always rewrite arrow PNGs for this theme's ink (stable directory; CSS URL unchanged).
@@ -1231,6 +1351,9 @@ void apply(QApplication &app, const QString &idIn, const QColor &accent) {
         applyWidgetPalettesRecursive(w);
     g_justStyled = nullptr;
     const QWidgetList widgets = app.allWidgets();
+    // ComboFit on Polish/StyleChange would re-measure and relayout every
+    // combo; font size does not change across themes, so suspend it here.
+    combofit::setSuspended(true);
     for (QWidget *w : widgets) {
         if (!w) continue;
         // Custom-painted canvas reads theme::color() in paintEvent; skip unpolish.
@@ -1239,10 +1362,15 @@ void apply(QApplication &app, const QString &idIn, const QColor &accent) {
         if (justStyled.contains(w)) continue;
         if (QStyle *st = w->style()) { st->unpolish(w); st->polish(w); }
     }
+    combofit::setSuspended(false);
     for (QWidget *w : widgets) {
         if (w && w->inherits("QTipLabel"))
             applyWidgetPalette(w);
     }
+    // Pin input widgets after the polish pass: a platform theme may have
+    // written a host palette onto inner QLineEdits during setPalette/polish.
+    forceInputPalettes(&app, false);
+    g_applyingTheme = false;
     for (QWidget *w : tops) {
         w->setUpdatesEnabled(true);
         w->update();

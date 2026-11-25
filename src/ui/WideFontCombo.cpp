@@ -62,10 +62,17 @@ WideFontComboBox::WideFontComboBox(QWidget *parent) : QFontComboBox(parent) {
 
 static bool isGenericFontFamily(const QString &fam);
 static bool familyIsInstalled(const QString &fam);
+static int g_installedFamiliesGen = 0;
 static void markFamilyItem(QStandardItem *it, const QString &fam, bool missing);
 
 void WideFontComboBox::refreshFontSources() {
     if (!model() && !m_list) return;
+    // Theme / icon / tablet prefs also emit prefsChanged. Rebuilding the
+    // family model (and calling QFontDatabase::families() per row) was the
+    // theme-switch hotspot after 0.3.27.
+    if (!appState().lastPrefsChangedFontSources() && m_list && m_list->rowCount() > 0)
+        return;
+    ++g_installedFamiliesGen;
     const QSignalBlocker blocker(this);
     const QString cur = currentFamily().isEmpty() ? currentFont().family() : currentFamily();
     // QFontComboBox reports generic faces such as "Sans Serif" as the current
@@ -128,11 +135,20 @@ static bool familyIsInstalled(const QString &fam)
 {
     if (fam.isEmpty()) return false;
     if (isGenericFontFamily(fam)) return true;
-    const QStringList all = QFontDatabase::families();
-    for (const QString &f : all) {
-        if (f.compare(fam, Qt::CaseInsensitive) == 0)
-            return true;
+    // Cache the system list once per refresh: families() is expensive and
+    // the old linear scan called it for every row (O(n²) on a large font set).
+    static thread_local QSet<QString> cached;
+    static thread_local int cachedGen = -1;
+    if (cachedGen != g_installedFamiliesGen) {
+        cached.clear();
+        const QStringList all = QFontDatabase::families();
+        cached.reserve(all.size());
+        for (const QString &f : all)
+            cached.insert(f.toCaseFolded());
+        cachedGen = g_installedFamiliesGen;
     }
+    if (cached.contains(fam.toCaseFolded()))
+        return true;
     // QFontInfo reports the face actually used for drawing.
     const QString resolved = QFontInfo(QFont(fam)).family();
     return !resolved.isEmpty() && resolved.compare(fam, Qt::CaseInsensitive) == 0;

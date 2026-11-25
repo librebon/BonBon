@@ -3,8 +3,8 @@
 # Identical for both brand packages. Idempotent; never deletes other keys.
 set -e
 TARGET="${MIMEAPPS_LIST:-/etc/xdg/mimeapps.list}"
-LW="application/x-libreworks=libreworks.desktop;bonbon.desktop;"
-BON="application/x-bonbon=bonbon.desktop;libreworks.desktop;"
+LW="application/x-libreworks=libreworks.desktop;io.github.librebon.BonBon.desktop;bonbon.desktop;"
+BON="application/x-bonbon=io.github.librebon.BonBon.desktop;bonbon.desktop;libreworks.desktop;"
 mkdir -p "$(dirname "$TARGET")"
 tmp=$(mktemp)
 if [ ! -f "$TARGET" ]; then
